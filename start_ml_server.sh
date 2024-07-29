@@ -1,7 +1,7 @@
 #!/bin/bash
 
-export HOPSWORKS_API_KEY="uJsXDDux4vsleHxd.A4nwCnW4qyfwgzPtVFnYsRwQBCEwmLrjmeb1elhzrO9SFFxJLtBXLpuv7W64jeWo"
-export BROKER_URL="redis://localhost:6379/0"
+export HOPSWORKS_API_KEY="your hopsworks key"
+export BROKER_URL="your redis url"
 
 # Start the Redis server if it's not already running
 redis-server &
@@ -48,8 +48,6 @@ celery -A bearing_condition_predictor.celery worker -Q training_pipe_queue --log
 CELERY_PID=$!
 
 # Start the Flask application with Gunicorn
-echo "Starting Flask application with Gunicorn..."
-#gunicorn -w 1 -b 127.0.0.1:5000 bearing_condition_predictor:app &
-#GUNICORN_PID=$!
-python3 run.py
+echo "Starting Flask application...."
+python3 run.py &
 FLASK_PID=$!
