@@ -33,7 +33,7 @@ For frequency domain, the signals are downsampled by half from 25600Hz to 12800H
 <p> 
 This project proposes a preliminary version of an integrated ML and IoT system to create a real time condition monitoring application with predictive capabilities.  A large part of the FEMTO dataset will be used for training the neural network as stated while the remaining part will be used as simulated real time accelerometer data.  An ubuntu virtual machine (Ubuntu 22.04) is used to simulate an edge gateway where trained neural networks will reside to predict bearing degradation from new sensor data.
 
-In a typical straightforward IoT system, data exchange between edge gateways and sensors such as accelerometers are via MQTT protocol.  Within an edge gateway, servers such as nodejs servers and flask servers can be hosted and data will be sent to these servers via HTTP POST requests.
+In a typical straightforward IoT system, data exchange between edge gateways and sensors such as accelerometers are via MQTT protocol.  Within an edge gateway, servers such as nodejs servers and flask servers can be hosted and data will be sent to these servers via HTTP POST requests.  Lastly, server-side events (SSE) or websockets can be utilised to forward data packets to front end clients.
 
 The trained neural network is used for real time inferences of incoming data (using simulated data) to determine state of degradation.  While inference is being done, the data is batched for scheduled asynchronous feature and model training pipleines; and streamed to a Streamlit dashboard for visualisation.  Predicted degradation labels are also streamed to both the dashboard and the backend of the alert system.  The latter determines the level of warning to be sent to the dashboard for further analysis or action by a user.
 
@@ -52,7 +52,7 @@ The trained neural network is used for real time inferences of incoming data (us
 
   -	Assume that this application is housed indoor, so good network connectivity is assumed
   - Assume that this end-to-end ML powered application will run on an edge gateway locally
-  -	Assume that immediate inference on every processed accelerometer data
+  -	Assume that immediate inference is required on every processed accelerometer data
   -	Assume near real time visualisation of bearing data
   -	Assume scheduled feature and model training pipeline, with the assumption that will not be any major changes to the current model
   -	Assume that users would require an amount of consecutive degradation labels to receive warnings of bearing condition for remedial action
@@ -63,7 +63,18 @@ The trained neural network is used for real time inferences of incoming data (us
 
 ![end2endML_bearing_monitoring_highlevel](https://github.com/user-attachments/assets/53182ef6-f049-4c13-8f5c-42ee46957ec4)
 
+<p> According to Hopsworks' [What is a ML pipeline?](https://www.hopsworks.ai/dictionary/ml-pipeline), it consists of feature, training and inference pipeline alongside a feature store and model registry, which is necessary for AI-based application.  However, in a real time IoT application where instantaneous inference of sensor data is required, the data will go through feature engineering before inference.  Corresponding feature and training pipeline for model (re)training will take place asynchronously.
+
+A model is initially created and trained separately before being deployed in the ML server for generating real time predictions on the application backend alongside asynchronous processes for scheduled feature and training pipeline.  Also, since the dashboard is planned to showcase degradation labels and alerts with real time visualisation of accelerometer data, the system is designed to handle all these processes on the backend asynchronously.  Lastly, since the accelerometer data is simulated, the simulation will also assume concurrent transmission of sensor data belonging to multiple accelerometers to the backend.
+</p>
+
 <h3> Detailed Architecture </h3>
 
 ![Detail System Diagram](https://github.com/user-attachments/assets/0e6505d8-62b6-4224-899d-0e547448af97)
+
+<p>  We make use of the following:
+  - Hopsworks: For use of feature store, model registry and management
+  - Celery: For asychronous processing such as scheduling workers for feature and training pipeline
+  - Redis: For storing celery queues, utilisation of in memory storage for storing model configurations, last read positions of csv files and consecutive labels to trigger different types of alerts
+</p>
 
