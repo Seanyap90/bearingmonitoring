@@ -5,9 +5,9 @@ import redis
 from time import sleep
 
 # Configuration
-REDIS_HOST = '172.18.0.2'
+REDIS_HOST = 'YOUR REDIS HOST'
 REDIS_PORT = 6379
-MQTT_BROKER = '172.18.0.4'  # Replace with your MQTT broker host
+MQTT_BROKER = 'YOUR MQTT BROKER URL'  # Replace with your MQTT broker host
 MQTT_PORT = 1883
 LISTEN_TOPIC = 'bearing/label'
 ALERT_TOPIC = 'bearing/alert'
