@@ -1,0 +1,15 @@
+{
+    "MODELS": {
+        "bearing_model": [
+            {
+                "model_subdirectory": "bearing_model",
+                "filename": "AE_classifier.pkl",
+                "version": 1
+            }
+        ]
+    },
+    "FEATURE_VIEW": {
+        "feature_view_name": "bearing_monitoring",
+        "version": 1
+    }
+}
