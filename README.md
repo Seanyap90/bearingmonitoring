@@ -64,7 +64,7 @@ The trained neural network is used for real time inferences of incoming data (us
 
 ![end2endML_bearing_monitoring_highlevel](https://github.com/user-attachments/assets/53182ef6-f049-4c13-8f5c-42ee46957ec4)
 
-<p> According to Hopsworks' [What is a ML pipeline?](https://www.hopsworks.ai/dictionary/ml-pipeline), it consists of feature, training and inference pipeline alongside a feature store and model registry, which is necessary for AI-based application.  However, in a real time IoT application where instantaneous inference of sensor data is required, the data will go through feature engineering before inference.  Corresponding feature and training pipeline for model (re)training will take place asynchronously.
+<p> According to Hopsworks' approach to ML pipelines (https://www.hopsworks.ai/dictionary/ml-pipeline), it consists of feature, training and inference pipeline alongside a feature store and model registry, which is necessary for AI-based application.  However, in a real time IoT application where instantaneous inference of sensor data is required, the data will go through feature engineering before inference.  Corresponding feature and training pipeline for model (re)training will take place asynchronously.
 
 A model is initially created and trained separately before being deployed in the ML server for generating real time predictions on the application backend alongside asynchronous processes for scheduled feature and training pipeline.  Also, since the dashboard is planned to showcase degradation labels and alerts with real time visualisation of accelerometer data, the system is designed to handle all these processes on the backend asynchronously.  Lastly, since the accelerometer data is simulated, the simulation will also assume concurrent transmission of sensor data belonging to multiple accelerometers to the backend.
 </p>
@@ -81,7 +81,7 @@ A model is initially created and trained separately before being deployed in the
   - paho-mqtt: for creating mqtt clients
   - aedes: mqtt broker in nodejs
 
-<p> To develop the historical pipelines and the ML server, the various codes from the repository for this paper, [BearingDegradationStageDetection](https://github.com/DovileDo/BearingDegradationStageDetection) are reconfigured. </p>
+<p> To develop the historical pipelines and the ML server, the various codes from the repository for this paper, (https://github.com/DovileDo/BearingDegradationStageDetection) are reconfigured. </p>
 
   - Historical_feature_and_training_pipeline.ipynb: Creating feature groups of at least 13k+ rows each, with 1282 features in the frequency domain after abovementioned fourier transformed, 28 features in the time domain and target labels generated from the AutoEncoder; creation of training pipeline via creation of a feature view in Hopsworks, training a multi-neural network and storage in Hopsworks' model registry
   - Index.js: Overall backend to facilitate mqtt broker, listening to mqtt topics and conduct server side events to emit data to a Streamlit interface
