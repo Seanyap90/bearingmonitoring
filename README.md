@@ -72,9 +72,10 @@ A model is initially created and trained separately before being deployed in the
 
 ![Detail System Diagram](https://github.com/user-attachments/assets/0e6505d8-62b6-4224-899d-0e547448af97)
 
-<p>  We make use of the following:
+<p>  We make use of the following: </p>
+
   - Hopsworks: For use of feature store, model registry and management
   - Celery: For asychronous processing such as scheduling workers for feature and training pipeline
   - Redis: For storing celery queues, utilisation of in memory storage for storing model configurations, last read positions of csv files and consecutive labels to trigger different types of alerts
-</p>
+
 
