@@ -124,6 +124,6 @@ http.createServer((req, res) => {
         client = null
         console.log('Client disconnected');
     });
-}).listen(clientPort, "192.168.56.102", () => {
-  console.log(`SSE server running at http://192.168.56.102:${clientPort}`);
+}).listen(clientPort, "<your server ip>", () => {
+  console.log(`SSE server running at http://<your server ip>:${clientPort}`);
 });
