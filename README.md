@@ -1,7 +1,7 @@
 <h1> Real time Bearing Condition Predictor System </h1>
 
 <h2>Introduction</h2>
-<p> Based on Predicting Bearings’ Degradation Stages for Predictive Maintenance in the Pharmaceutical Industry (2022) by Dovile Juodelyte, Veronika Cheplygina, Therese Graversen, Philippe Bonnet, we create a conceptual condition monitoring/predictive maintenance app to integrate their deep learing models for real time inference to predict state of degradation.  Also, the backend of this app will also schedule adding into feature pipelines and model training.  Hence this end-to-end system will be built based on the 3-pipeline methodology which includes the use of feature stores and ready made 3rd party model registry.  On the fronte end single page app with a monitoring dashboard that processes accelerometer data, displays the level of degradation as well as alerting a user of the seriousness of current condition of the monitored bearings.  The dataset used is from the FEMTO dataset.
+<p> Based on Predicting Bearings’ Degradation Stages for Predictive Maintenance in the Pharmaceutical Industry (2022) by Dovile Juodelyte, Veronika Cheplygina, Therese Graversen, Philippe Bonnet, we create a conceptual condition monitoring/predictive maintenance app to integrate their deep learing models for real time inference to predict state of degradation.  Also, the backend of this app will also schedule adding into feature pipelines and model training.  Hence this end-to-end system will be built based on the 3-pipeline methodology which includes the use of feature stores and ready made 3rd party model registry.  On the front end single page app with a monitoring dashboard that processes accelerometer data, displays the level of degradation as well as alerting a user of the seriousness of current condition of the monitored bearings.  The dataset used is from the FEMTO dataset.
 
 </p>
 
@@ -21,7 +21,7 @@ as well as the model architectures for both steps:
 
 <p> Each raw accelerometer data/signal from the FEMTO dataset are processed in both frequency and time domains.
 
-For frequency domain, the signals are downsampled by half from 25600Hz to 12800Hz to reduce data dimensionality.  After conversion, frequencies up to 6,400 Hz are obtained, where bearing degradation signs are expected. The downsampled signal in the frequency domain has 641 features. Both vertical and horizontal vibration signals were transformed to the frequency domain.  Both vertical and horizontal vibration signals were transformed to the frequency domain.  For the time domain, both horizontal and vertical signals are split into the following features: mean, absolute median, standard deviation, skewness, kurtosis, crest factor, energy, rms, number of peaks, number of zero crossings, Shapiro test and KL divergence.
+For frequency domain, the signals are downsampled by half from 25600Hz to 12800Hz to reduce data dimensionality.  After conversion, frequencies up to 6,400 Hz are obtained, where bearing degradation signs are expected. The downsampled signal in the frequency domain has 641 features being created from each of both vertical and horizontal vibration signals.  For the time domain, both horizontal and vertical signals are split into the following features: mean, absolute median, standard deviation, skewness, kurtosis, crest factor, energy, rms, number of peaks, number of zero crossings, Shapiro test and KL divergence.
 
 </p>
 
@@ -55,9 +55,10 @@ The trained neural network is used for real time inferences of incoming data (us
   -	Assume that immediate inference is required on every processed accelerometer data
   -	Assume near real time visualisation of bearing data
   -	Assume scheduled feature and model training pipeline, with the assumption that will not be any major changes to the current model
-  -	Assume that users would require an amount of consecutive degradation labels to receive warnings of bearing condition for remedial action
+  -	Assume that users would require consecutive occurences of degradation predictions for remedial action
   -	Assume 0 % packet loss for mqtt, post requests, and server side events
   -	Assume accelerometers and gateway are exchanging data in the same network
+  -	Assume the there is no cybersecurity issues in downloading and uploading to Hopsworks
 
 <h3> High Level Architecture </h3>
 
@@ -70,12 +71,29 @@ A model is initially created and trained separately before being deployed in the
 
 <h3> Detailed Architecture </h3>
 
-![Detail System Diagram](https://github.com/user-attachments/assets/0e6505d8-62b6-4224-899d-0e547448af97)
+![Detail System Diagram](https://github.com/user-attachments/assets/d3e950fb-d768-46d0-b63d-d46f89c966ae)
 
 <p>  We make use of the following: </p>
 
   - Hopsworks: For use of feature store, model registry and management
   - Celery: For asychronous processing such as scheduling workers for feature and training pipeline
   - Redis: For storing celery queues, utilisation of in memory storage for storing model configurations, last read positions of csv files and consecutive labels to trigger different types of alerts
+  - paho-mqtt: for creating mqtt clients
+  - aedes: mqtt broker in nodejs
+
+<p> To develop the historical pipelines and the ML server, the various codes from the repository for this paper, [BearingDegradationStageDetection](https://github.com/DovileDo/BearingDegradationStageDetection) are reconfigured. </p>
+
+  - Historical_feature_and_training_pipeline.ipynb: Creating feature groups of at least 13k+ rows each, with 1282 features in the frequency domain after abovementioned fourier transformed, 28 features in the time domain and target labels generated from the AutoEncoder; creation of training pipeline via creation of a feature view in Hopsworks, training a multi-neural network and storage in Hopsworks' model registry
+  - Index.js: Overall backend to facilitate mqtt broker, listening to mqtt topics and conduct server side events to emit data to a Streamlit interface
+  - MQTT Clients: Client before ML server will listen for published simulated data before sending a post request to ML server for instanteous inference; client before alert system: listening for generated degradation predictions and publishing alert type based on consecutive occurences of specific degradation predictions
+  - Flask server: __init__.py for loading initial configurations; initialisation.py for singleton instantiation of models and feature groups; endpoint.py for receiving post requests for inferences by specific models, feat_eng_pipe.py for updating feature groups and generating labels for new data; training_pipe.py for model (re)training with nnclassifier.py and updating model versions for real time inference
+  - Frontend: bearing_front.py for receiving real time data and visualising accelerometer values for respective bearings with their degradation predictions and alert types.
+
+
+<h2> Citations </h2>
+Juodelyte, D., Cheplygina, V., Graversen, T., & Bonnet, P. (2022). Predicting Bearings’ Degradation Stages for Predictive Maintenance in the Pharmaceutical Industry. arXiv preprint arXiv:2203.03259.
+
+
+
 
 
