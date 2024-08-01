@@ -1,4 +1,5 @@
 <h1> Real time Bearing Condition Predictor System </h1>
+<p>Refer to the following article for full demo: https://www.linkedin.com/pulse/ml-iot-predictive-maintenance-bearing-condition-monitoring-sean-yap-zhmlc/?trackingId=sSeQ0wKVRUuHiB7VPVUiyA%3D%3D</p>
 
 <h2>Introduction</h2>
 <p> Based on Predicting Bearings’ Degradation Stages for Predictive Maintenance in the Pharmaceutical Industry (2022) by Dovile Juodelyte, Veronika Cheplygina, Therese Graversen, Philippe Bonnet, we create a conceptual condition monitoring/predictive maintenance app to integrate their deep learing models for real time inference to predict state of degradation.  Also, the backend of this app will also schedule adding into feature pipelines and model training.  Hence this end-to-end system will be built based on the 3-pipeline methodology which includes the use of feature stores and ready made 3rd party model registry.  On the front end single page app with a monitoring dashboard that processes accelerometer data, displays the level of degradation as well as alerting a user of the seriousness of current condition of the monitored bearings.  The dataset used is from the FEMTO dataset.
